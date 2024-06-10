@@ -1,4 +1,4 @@
-import { Component, input, signal } from '@angular/core';
+import { Component, OnInit, effect, input, signal } from '@angular/core';
 import { BassStringComponent } from './bass-string.component';
 import { ScalesComponent } from './scales.component';
 
@@ -9,18 +9,20 @@ import { ScalesComponent } from './scales.component';
   template: `
     <div class="fretboard">
       @for (string of strings; track $index) {
+        <!-- {{ scales[scale()][$index] }} -->
         <bass-string
           class="string"
-          [string]="string"
+          [name]="string"
           [fingers]="scales[scale()][$index]"
         />
       }
     </div>
   `,
 })
-export class BassComponent {
+export class BassComponent implements OnInit {
   scale = input.required<string>();
   strings = ['G', 'D', 'A', 'E'];
+  voice: any;
   scales: { [key: string]: number[][] } = {
     ionisch: [
       [1, 2, 4],
@@ -65,4 +67,28 @@ export class BassComponent {
       [1, 2, 4],
     ],
   };
+
+  ngOnInit(): void {
+    speechSynthesis.onvoiceschanged = (event) => {
+      const voices = speechSynthesis.getVoices();
+      // console.log(voices);
+      // console.log(voices[107]);
+      this.voice = voices[107];
+    };
+  }
+
+  eRef = effect(() => {
+    if (this.scale() && this.voice) {
+      const fingersVoice = [...this.scales[this.scale()]]
+        .reverse()
+        .flat()
+        .join('     ');
+
+      console.log(fingersVoice);
+      let utterance = new SpeechSynthesisUtterance(fingersVoice);
+      utterance.voice = this.voice;
+      utterance.pitch = 1.2;
+      speechSynthesis.speak(utterance);
+    }
+  });
 }

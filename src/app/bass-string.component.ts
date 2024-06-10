@@ -12,15 +12,15 @@ import { Component, computed, input } from '@angular/core';
   `,
 })
 export class BassStringComponent {
-  string = input.required<string>();
+  name = input.required<string>();
   fingers = input.required<number[]>();
 
   allNotes = ['A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#'];
 
-  start = computed(() => this.allNotes.indexOf(this.string()));
+  start = computed(() => this.allNotes.indexOf(this.name()));
 
   notes = computed(() => {
-    const index = this.allNotes.indexOf(this.string());
+    const index = this.allNotes.indexOf(this.name());
     const start = this.allNotes.slice(index);
     const end = this.allNotes.slice(0, index);
     return [...start, ...end].slice(0, 5);
