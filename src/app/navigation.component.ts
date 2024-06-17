@@ -11,6 +11,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <a routerLinkActive="active" [routerLink]="scale">{{ scale }}</a>
       </li>
     }
+    <li>
+      <a routerLinkActive="active" routerLink="settings">⚙️</a>
+    </li>
   </ul>`,
   styles: `
     ul {
