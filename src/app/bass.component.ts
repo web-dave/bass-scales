@@ -77,18 +77,11 @@ export class BassComponent {
         })
         .reverse()
         .flat();
-      console.log(this.scaleFrequencies);
-      // this.oscillators = this.scaleFrequencies.map((f) => {
-      //   const osc = this.service.audioContext.createOscillator();
-      //   osc.connect(this.service.mainGainNode);
-      //   osc.type = 'sine';
-      //   osc.frequency.value = f;
-      //   return osc;
-      // });
     }
   });
   loopI = -1;
   play() {
+    this.loopI = -1;
     interval(1000)
       .pipe(
         map((i) => {
@@ -99,9 +92,7 @@ export class BassComponent {
           return this.loopI;
         }),
         takeUntil(this.kill$$),
-        tap((i) => console.log('i', i)),
         map((i) => this.scaleFrequencies[i]),
-        tap((f) => console.log('f', f)),
         map((f) => {
           const osc = this.service.audioContext.createOscillator();
           osc.connect(this.service.mainGainNode);
