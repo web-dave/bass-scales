@@ -2,7 +2,8 @@ import { Injectable, effect, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
-  sound = signal<boolean>(false);
+  audioInitialized = false;
+  sound = signal<boolean>(true);
   tones = signal<boolean>(true);
   voice = signal<SpeechSynthesisVoice | undefined>(undefined);
 
@@ -12,7 +13,7 @@ export class SettingsService {
 
   audioContext = new AudioContext();
   oscList = [];
-  mainGainNode: GainNode;
+  mainGainNode!: GainNode;
 
   scales: { [key: string]: number[][] } = {
     ionisch: [
@@ -66,22 +67,23 @@ export class SettingsService {
     E: number[];
   } = {
     G: [
-      207.652348789972569, 220.0, 233.081880759044958, 246.941650628062055,
-      261.625565300598634,
+      587.32953583481512, 622.253967444161821, 659.255113825739859,
+      698.456462866007768, 739.988845423268797,
     ],
     D: [
-      155.563491861040455, 164.813778456434964, 174.614115716501942,
-      184.997211355817199, 195.997717990874647,
+      440.0, 466.163761518089916, 493.883301256124111, 523.251130601197269,
+      554.365261953744192,
     ],
     A: [
-      116.540940379522479, 123.470825314031027, 130.812782650299317,
-      138.591315488436048, 146.83238395870378,
+      329.627556912869929, 349.228231433003884, 369.994422711634398,
+      391.995435981749294, 415.304697579945138,
     ],
     E: [
-      87.307057858250971, 92.498605677908599, 97.998858995437323,
-      103.826174394986284, 110.0,
+      246.941650628062055, 261.625565300598634, 277.182630976872096,
+      293.66476791740756, 311.12698372208091,
     ],
   };
+
   freqFlat = [
     ...this.frequencies['E'],
     ...this.frequencies['A'],
@@ -89,10 +91,18 @@ export class SettingsService {
     ...this.frequencies['G'],
   ];
 
-  constructor() {
+  // audioContext!: AudioContext;
+  // oscList = [];
+  // mainGainNode!: GainNode;
+
+  constructor() {}
+
+  startAudio() {
+    this.audioContext = new AudioContext();
     this.mainGainNode = this.audioContext.createGain();
     this.mainGainNode.connect(this.audioContext.destination);
     this.mainGainNode.gain.value = 0.4;
+    this.audioInitialized = true;
   }
   //   oscillators: OscillatorNode[] = this.freqFlat.map((f) => {
   //     const osc = this.audioContext.createOscillator();

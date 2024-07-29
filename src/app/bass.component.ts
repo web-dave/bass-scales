@@ -50,7 +50,12 @@ export class BassComponent {
   oscillators: OscillatorNode[] = [];
 
   eRef = effect(() => {
-    if (this.scale() && this.voice() && this.sound()) {
+    if (
+      this.scale() &&
+      this.voice() &&
+      this.sound() &&
+      this.service.audioInitialized
+    ) {
       const fingersVoice = [...this.scales[this.scale()]]
         .reverse()
         .flat()
@@ -58,6 +63,7 @@ export class BassComponent {
 
       console.log(fingersVoice);
       let utterance = new SpeechSynthesisUtterance(fingersVoice);
+      utterance.onerror = (err) => console.log('ERROR!!!', err);
       utterance.voice = this.voice() as SpeechSynthesisVoice;
       utterance.pitch = 1.3;
       utterance.rate = 0.7;

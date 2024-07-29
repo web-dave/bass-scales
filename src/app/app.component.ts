@@ -1,20 +1,23 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { RouterOutlet, Router } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './navigation.component';
-import { fromEvent, merge } from 'rxjs';
 import { SettingsService } from './settings.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NavigationComponent],
-  template: ` <bass-navigation></bass-navigation>
-    <router-outlet />`,
+  template: `
+    <bass-navigation />
+    <router-outlet />
+    <hr />
+    <button (click)="service.startAudio()">re-init Audio</button>
+  `,
 })
 export class AppComponent implements OnInit {
   recognition!: SpeechRecognition;
   speechRecognitionList!: SpeechGrammarList;
-
+  service = inject(SettingsService);
   voice = inject(SettingsService).voice;
 
   steps = [1, 2, 3, 4, 5, 6, 0];
@@ -22,12 +25,10 @@ export class AppComponent implements OnInit {
     ' | ',
   )};`;
 
-  router = inject(Router);
-
   ngOnInit(): void {
     speechSynthesis.onvoiceschanged = (event) => {
       const voices = speechSynthesis.getVoices();
-      // console.log(voices);
+      console.log(voices[0]);
       // console.log(voices[107]);
       this.voice.set(voices[0]);
     };
