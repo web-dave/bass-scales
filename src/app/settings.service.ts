@@ -11,9 +11,10 @@ export class SettingsService {
     console.log('sound: ', this.sound(), 'tones: ', this.tones());
   });
 
-  audioContext = new AudioContext();
+  audioContext!: AudioContext;
   oscList = [];
   mainGainNode!: GainNode;
+  mainGainNodeS = signal<GainNode | null>(null);
 
   scales: { [key: string]: number[][] } = {
     ionisch: [
@@ -103,6 +104,7 @@ export class SettingsService {
     this.mainGainNode.connect(this.audioContext.destination);
     this.mainGainNode.gain.value = 0.4;
     this.audioInitialized = true;
+    this.mainGainNodeS.set(this.mainGainNode);
   }
   //   oscillators: OscillatorNode[] = this.freqFlat.map((f) => {
   //     const osc = this.audioContext.createOscillator();

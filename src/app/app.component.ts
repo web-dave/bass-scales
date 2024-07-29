@@ -9,9 +9,11 @@ import { SettingsService } from './settings.service';
   imports: [RouterOutlet, NavigationComponent],
   template: `
     <bass-navigation />
+    <dialog [open]="!service.mainGainNodeS()">
+      <button (click)="service.startAudio()">Start Audio</button>
+    </dialog>
     <router-outlet />
     <hr />
-    <button (click)="service.startAudio()">re-init Audio</button>
   `,
 })
 export class AppComponent implements OnInit {

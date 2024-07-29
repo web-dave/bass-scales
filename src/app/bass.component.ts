@@ -12,11 +12,12 @@ import { BassStringComponent } from './bass-string.component';
 import { ScalesComponent } from './scales.component';
 import { SettingsService } from './settings.service';
 import { Subject, interval, map, take, takeUntil, tap } from 'rxjs';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'bass-fretboard',
   standalone: true,
-  imports: [ScalesComponent, BassStringComponent],
+  imports: [ScalesComponent, BassStringComponent, JsonPipe],
   template: `
     <div class="fretboard">
       @for (string of strings; track $index) {
@@ -31,6 +32,7 @@ import { Subject, interval, map, take, takeUntil, tap } from 'rxjs';
     <input type="range" name="" id="" />
     <button (click)="play()">play</button>
     <button (click)="kill$$.next(1)">stop</button>
+    <pre>{{ error | json }}</pre>
   `,
 })
 export class BassComponent {
@@ -45,6 +47,8 @@ export class BassComponent {
     return [];
   });
   scales = this.service.scales;
+
+  error: any = '';
 
   scaleFrequencies: number[] = [];
   oscillators: OscillatorNode[] = [];
@@ -63,7 +67,10 @@ export class BassComponent {
 
       console.log(fingersVoice);
       let utterance = new SpeechSynthesisUtterance(fingersVoice);
-      utterance.onerror = (err) => console.log('ERROR!!!', err);
+      utterance.onerror = (err) => {
+        console.log('ERROR!!!', err);
+        this.error = err;
+      };
       utterance.voice = this.voice() as SpeechSynthesisVoice;
       utterance.pitch = 1.3;
       utterance.rate = 0.7;
