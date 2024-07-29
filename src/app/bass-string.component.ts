@@ -21,6 +21,7 @@ export class BassStringComponent {
   name = input.required<'G' | 'D' | 'A' | 'E'>();
   fingers = input.required<number[]>();
   service = inject(SettingsService);
+  activeFrequencies: number[] = [];
   // oscillators = this.service.oscillators;
   frequencies = computed(() => {
     if (this.name()) {
@@ -54,16 +55,31 @@ export class BassStringComponent {
   }
   playNote(i: number) {
     console.log(i);
-    const osc = this.oscillators()[i];
-    of(osc)
+    const freq = this.frequencies()[i];
+    const osc = this.service.audioContext.createOscillator();
+    osc.connect(this.service.mainGainNode);
+    osc.type = 'sine';
+    osc.frequency.value = freq;
+
+    if (this.activeFrequencies.includes(freq)) {
+      return;
+    }
+
+    of([osc, freq])
       .pipe(
-        tap((o) => {
+        tap((data) => {
+          const o = data[0] as OscillatorNode;
+          this.activeFrequencies.push(data[1] as number);
           o.start();
           console.log(i, 'start');
         }),
         delay(1000),
-        tap((o) => {
+        tap((data) => {
+          const o = data[0] as OscillatorNode;
           o.stop();
+          const freqs = [...this.activeFrequencies];
+          this.activeFrequencies = freqs.filter((f) => f !== data[1]);
+          o.disconnect();
           console.log(i, 'stop');
         }),
       )
