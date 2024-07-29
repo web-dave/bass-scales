@@ -29,10 +29,11 @@ import { JsonPipe } from '@angular/common';
         />
       }
     </div>
-    <input type="range" name="" id="" />
+    <!-- <input type="range" name="" id="" /> -->
+    <button (click)="speak()">speak</button>
     <button (click)="play()">play</button>
     <button (click)="kill$$.next(1)">stop</button>
-    <pre>{{ error | json }}</pre>
+    <!-- <pre>{{ error | json }}</pre> -->
   `,
 })
 export class BassComponent {
@@ -48,6 +49,9 @@ export class BassComponent {
   });
   scales = this.service.scales;
 
+  synth = window.speechSynthesis;
+  fingersVoice: string = '';
+
   error: any = '';
 
   scaleFrequencies: number[] = [];
@@ -60,21 +64,12 @@ export class BassComponent {
       this.sound() &&
       this.service.audioInitialized
     ) {
-      const fingersVoice = [...this.scales[this.scale()]]
+      this.fingersVoice = [...this.scales[this.scale()]]
         .reverse()
         .flat()
         .join('     ');
 
-      console.log(fingersVoice);
-      let utterance = new SpeechSynthesisUtterance(fingersVoice);
-      utterance.onerror = (err) => {
-        console.log('ERROR!!!', err);
-        this.error = err;
-      };
-      utterance.voice = this.voice() as SpeechSynthesisVoice;
-      utterance.pitch = 1.3;
-      utterance.rate = 0.7;
-      speechSynthesis.speak(utterance);
+      console.log(this.fingersVoice);
     }
   });
 
@@ -123,5 +118,17 @@ export class BassComponent {
         }),
       )
       .subscribe();
+  }
+
+  speak() {
+    let utterance = new SpeechSynthesisUtterance(this.fingersVoice);
+    utterance.onerror = (err) => {
+      console.log('ERROR!!!', err);
+      this.error = err;
+    };
+    utterance.voice = this.voice() as SpeechSynthesisVoice;
+    utterance.pitch = 1.3;
+    utterance.rate = 0.7;
+    this.synth.speak(utterance);
   }
 }

@@ -54,6 +54,9 @@ export class BassStringComponent {
     return this.fingers().includes(i);
   }
   playNote(i: number) {
+    if (!this.isDotted(i)) {
+      return;
+    }
     console.log(i);
     const freq = this.frequencies()[i];
     const osc = this.service.audioContext.createOscillator();
