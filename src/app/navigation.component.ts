@@ -83,7 +83,7 @@ export class NavigationComponent {
   scaleNames = [
     'ionisch',
     'dorisch',
-    'phrysisch',
+    'phrygisch',
     'lydisch',
     'mixolydisch',
     'aeolisch',
