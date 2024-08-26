@@ -19,7 +19,7 @@ export class ScalesComponent {
   scaleNames = [
     'ionisch',
     'dorisch',
-    'phrysisch',
+    'phrygisch',
     'lydisch',
     'mixolydisch',
     'aeolisch',
