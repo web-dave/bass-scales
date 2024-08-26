@@ -2,18 +2,39 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavigationComponent } from './navigation.component';
 import { SettingsService } from './settings.service';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavigationComponent],
+  imports: [RouterOutlet, NavigationComponent, NgClass],
   template: `
-    <bass-navigation />
-    <dialog [open]="!service.mainGainNodeS()">
-      <button (click)="service.startAudio()">Start Audio</button>
-    </dialog>
+    <bass-navigation [ngClass]="{ init: !service.mainGainNodeS() }" />
+    <!-- <dialog [open]="!service.mainGainNodeS()"> -->
+
+    @if (!service.mainGainNodeS()) {
+      <div class="start" (click)="service.startAudio()">Start</div>
+      <!-- <button (click)="service.startAudio()">Start Audio</button> -->
+    }
+    <!-- </dialog> -->
     <router-outlet />
-    <hr />
+  `,
+  styles: `
+    bass-navigation.init {
+      margin-bottom: 50px;
+      display: block;
+    }
+    .start {
+      height: 150px;
+      width: 150px;
+      border-radius: 50%;
+      background-color: hotpink;
+      margin: auto;
+      text-align: center;
+      padding-top: 53px;
+      padding-bottom: 50px;
+      font-size: xx-large;
+    }
   `,
 })
 export class AppComponent implements OnInit {

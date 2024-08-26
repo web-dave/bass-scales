@@ -165,3 +165,29 @@ input[type="checkbox"]:disabled {
   color: var(--form-control-disabled);
   cursor: not-allowed;
 }
+
+#vibrating-text {
+  font-size: 40px;
+  display: inline-block;
+  position: relative;
+}
+@keyframes vibrate {
+  0% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+  75% {
+    transform: translateY(-2px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+.vibrate {
+  animation: vibrate 0.1s infinite linear;
+}

@@ -11,9 +11,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         <a routerLinkActive="active" [routerLink]="scale">{{ scale }}</a>
       </li>
     }
-    <li>
+    <!-- <li>
       <a routerLinkActive="active" routerLink="settings">⚙️</a>
-    </li>
+    </li> -->
   </ul>`,
   styles: `
     ul {
@@ -29,8 +29,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         display: block;
         color: white;
         text-align: center;
-        padding: 14px 16px;
+        padding: 6px 16px;
         text-decoration: none;
+        font-size: 14px;
         &:hover:not(.active) {
           background-color: #111;
         }
