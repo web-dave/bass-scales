@@ -1,5 +1,13 @@
 import { NgClass } from '@angular/common';
-import { Component, Signal, computed, inject, input } from '@angular/core';
+import {
+  Component,
+  Renderer2,
+  Signal,
+  computed,
+  effect,
+  inject,
+  input,
+} from '@angular/core';
 import { SettingsService } from './settings.service';
 import { debounceTime, delay, of, tap } from 'rxjs';
 
@@ -9,10 +17,15 @@ import { debounceTime, delay, of, tap } from 'rxjs';
   imports: [NgClass],
   template: `
     @for (note of notes(); track $index) {
+      <!-- class="vibrate" -->
       <div
         class="note-fret"
-        [ngClass]="{ 'in-scale': isDotted($index) }"
-        (mousedown)="playNote($index)"
+        #noteFret
+        [ngClass]="{
+          'in-scale': isDotted($index),
+          vibrate: playingNote() === frequencies()[$index],
+        }"
+        (mousedown)="playNote($index, noteFret)"
       ></div>
     }
   `,
@@ -20,7 +33,9 @@ import { debounceTime, delay, of, tap } from 'rxjs';
 export class BassStringComponent {
   name = input.required<'G' | 'D' | 'A' | 'E'>();
   fingers = input.required<number[]>();
+  playingNote = input.required<number>();
   service = inject(SettingsService);
+  private renderer = inject(Renderer2);
   activeFrequencies: number[] = [];
   // oscillators = this.service.oscillators;
   frequencies = computed(() => {
@@ -53,11 +68,11 @@ export class BassStringComponent {
   isDotted(i: number) {
     return this.fingers().includes(i);
   }
-  playNote(i: number) {
+  playNote(i: number, elem: HTMLDivElement) {
     if (!this.isDotted(i)) {
       return;
     }
-    console.log(i);
+    // console.log(i);
     const freq = this.frequencies()[i];
     const osc = this.service.audioContext.createOscillator();
     osc.connect(this.service.mainGainNode);
@@ -68,13 +83,16 @@ export class BassStringComponent {
       return;
     }
 
+    // const noteFretElement = event.target as HTMLElement;
+    this.renderer.addClass(elem, 'vibrate');
+
     of([osc, freq])
       .pipe(
         tap((data) => {
           const o = data[0] as OscillatorNode;
           this.activeFrequencies.push(data[1] as number);
           o.start();
-          console.log(i, 'start');
+          // console.log(i, 'start');
         }),
         delay(1000),
         tap((data) => {
@@ -83,7 +101,8 @@ export class BassStringComponent {
           const freqs = [...this.activeFrequencies];
           this.activeFrequencies = freqs.filter((f) => f !== data[1]);
           o.disconnect();
-          console.log(i, 'stop');
+          this.renderer.removeClass(elem, 'vibrate');
+          // console.log(i, 'stop');
         }),
       )
       .subscribe();

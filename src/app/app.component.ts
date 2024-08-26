@@ -51,7 +51,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     speechSynthesis.onvoiceschanged = (event) => {
       const voices = speechSynthesis.getVoices();
-      console.log(voices[0]);
+      // console.log(voices[0]);
       // console.log(voices[107]);
       this.voice.set(voices[0]);
     };

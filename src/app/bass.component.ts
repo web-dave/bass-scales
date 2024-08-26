@@ -25,6 +25,7 @@ import { JsonPipe } from '@angular/common';
         <bass-string
           class="string"
           [name]="string"
+          [playingNote]="playingNote"
           [fingers]="scales[scale()][$index]"
         />
       }
@@ -88,6 +89,8 @@ export class BassComponent {
   synth = window.speechSynthesis;
   fingersVoice: string = '';
 
+  playingNote = 0;
+
   error: any = '';
 
   scaleFrequencies: number[] = [];
@@ -105,7 +108,7 @@ export class BassComponent {
         .flat()
         .join('     ');
 
-      console.log(this.fingersVoice);
+      // console.log(this.fingersVoice);
     }
   });
 
@@ -123,6 +126,7 @@ export class BassComponent {
         .flat();
     }
   });
+
   loopI = -1;
   play() {
     this.loopI = -1;
@@ -138,6 +142,7 @@ export class BassComponent {
         takeUntil(this.kill$$),
         map((i) => this.scaleFrequencies[i]),
         map((f) => {
+          this.playingNote = f;
           const osc = this.service.audioContext.createOscillator();
           osc.connect(this.service.mainGainNode);
           osc.type = 'sine';
@@ -149,6 +154,8 @@ export class BassComponent {
             osc.start();
             setTimeout(() => {
               osc.stop();
+
+              this.playingNote = 0;
             }, 500);
           }
         }),

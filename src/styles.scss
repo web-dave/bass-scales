@@ -166,11 +166,6 @@ input[type="checkbox"]:disabled {
   cursor: not-allowed;
 }
 
-#vibrating-text {
-  font-size: 40px;
-  display: inline-block;
-  position: relative;
-}
 @keyframes vibrate {
   0% {
     transform: translateY(0);
