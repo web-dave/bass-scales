@@ -7,6 +7,8 @@ export class SettingsService {
   tones = signal<boolean>(true);
   voice = signal<SpeechSynthesisVoice | undefined>(undefined);
 
+  controls = signal<'speak' | 'play' | 'stop'>('stop');
+
   eRef = effect(() => {
     console.log('sound: ', this.sound(), 'tones: ', this.tones());
   });
