@@ -13,7 +13,10 @@ import { NgClass } from '@angular/common';
     <!-- <dialog [open]="!service.mainGainNodeS()"> -->
 
     @if (!service.mainGainNodeS()) {
-      <div class="start" (click)="service.startAudio()">Start</div>
+      <div class="container">
+        <div class="start" (click)="service.startAudio('bass')">Bass</div>
+        <div class="start" (click)="service.startAudio('guitar')">Guitar</div>
+      </div>
       <!-- <button (click)="service.startAudio()">Start Audio</button> -->
     }
     <!-- </dialog> -->
@@ -24,12 +27,17 @@ import { NgClass } from '@angular/common';
       margin-bottom: 50px;
       display: block;
     }
+    .container {
+      margin-top: 70px;
+      display: flex;
+      justify-content: center;
+    }
     .start {
       height: 150px;
       width: 150px;
       border-radius: 50%;
       background-color: hotpink;
-      margin: auto;
+      margin: 30px;
       text-align: center;
       padding-top: 53px;
       padding-bottom: 50px;

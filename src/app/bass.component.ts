@@ -12,19 +12,24 @@ import { BassStringComponent } from './bass-string.component';
 import { ScalesComponent } from './scales.component';
 import { SettingsService } from './settings.service';
 import { Subject, interval, map, take, takeUntil, tap } from 'rxjs';
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, NgClass } from '@angular/common';
+import { IString } from './allnotes';
 
 @Component({
   selector: 'bass-fretboard',
   standalone: true,
-  imports: [ScalesComponent, BassStringComponent, JsonPipe],
+  imports: [ScalesComponent, BassStringComponent, JsonPipe, NgClass],
   template: `
     <div class="fretboard">
       @for (string of strings; track $index) {
-        <!-- {{ scales[scale()][$index] }} -->
         <bass-string
           class="string"
+          [ngClass]="{
+            bass: service.instrument() == 'bass',
+            guitar: service.instrument() == 'guitar',
+          }"
           [name]="string"
+          [instrument]="service.instrument()"
           [playingNote]="playingNote"
           [fingers]="scales[scale()][$index]"
         />
@@ -37,13 +42,13 @@ export class BassComponent {
   sound = this.service.sound.asReadonly();
   voice = this.service.voice.asReadonly();
   scale = input.required<string>();
-  strings: ['G', 'D', 'A', 'E'] = ['G', 'D', 'A', 'E'];
   kill$$ = new Subject<number>();
   noteFrequenzes: Signal<number[]> = computed(() => {
     this.scale();
     return [];
   });
   scales = this.service.scales;
+  strings = this.service.strings;
 
   synth = window.speechSynthesis;
   fingersVoice: string = '';
@@ -94,9 +99,7 @@ export class BassComponent {
       const frequencies = this.service.frequencies;
       this.scaleFrequencies = [...this.scales[this.scale()]]
         .map((string, i_string) => {
-          const stringName: 'G' | 'D' | 'A' | 'E' = ['G', 'D', 'A', 'E'][
-            i_string
-          ] as 'G' | 'D' | 'A' | 'E';
+          const stringName: IString = this.strings[i_string] as IString;
           return string.map((i) => frequencies[stringName][i]);
         })
         .reverse()
@@ -111,7 +114,7 @@ export class BassComponent {
       .pipe(
         map((i) => {
           this.loopI++;
-          if (this.loopI >= 12) {
+          if (this.loopI >= this.scaleFrequencies.length) {
             this.loopI = 0;
           }
           return this.loopI;

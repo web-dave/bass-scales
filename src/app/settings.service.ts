@@ -1,4 +1,6 @@
 import { Injectable, effect, signal } from '@angular/core';
+import { fingers, IInstrument } from './fingers';
+import { getFrequencies, IString } from './allnotes';
 
 @Injectable({ providedIn: 'root' })
 export class SettingsService {
@@ -6,6 +8,7 @@ export class SettingsService {
   sound = signal<boolean>(true);
   tones = signal<boolean>(true);
   voice = signal<SpeechSynthesisVoice | undefined>(undefined);
+  instrument = signal<IInstrument>('bass');
 
   controls = signal<'speak' | 'play' | 'stop'>('stop');
 
@@ -19,43 +22,43 @@ export class SettingsService {
   mainGainNodeS = signal<GainNode | null>(null);
 
   scales: { [key: string]: number[][] } = {
-    ionisch: [
+    ionian: [
       [1, 2, 4],
       [1, 2, 4],
       [0, 2, 4],
       [0, 2, 4],
     ],
-    dorisch: [
+    dorian: [
       [0, 2, 4],
       [0, 2, 4],
       [0, 2, 4],
       [0, 2, 3],
     ],
-    phrygisch: [
+    phrygian: [
       [0, 2, 4],
       [0, 2, 3],
       [0, 2, 3],
       [0, 1, 3],
     ],
-    lydisch: [
+    lydian: [
       [1, 3, 4],
       [1, 2, 4],
       [1, 2, 4],
       [0, 2, 4],
     ],
-    mixolydisch: [
+    mixolydian: [
       [1, 2, 4],
       [0, 2, 4],
       [0, 2, 4],
       [0, 2, 4],
     ],
-    aeolisch: [
+    aeolian: [
       [0, 2, 4],
       [0, 2, 4],
       [0, 2, 3],
       [0, 2, 3],
     ],
-    lokrisch: [
+    locrian: [
       [1, 3, 4],
       [1, 3, 4],
       [1, 2, 4],
@@ -64,11 +67,15 @@ export class SettingsService {
   };
 
   frequencies: {
+    e: number[];
+    H: number[];
     G: number[];
     D: number[];
     A: number[];
     E: number[];
   } = {
+    e: [],
+    H: [],
     G: [
       587.32953583481512, 622.253967444161821, 659.255113825739859,
       698.456462866007768, 739.988845423268797,
@@ -87,20 +94,22 @@ export class SettingsService {
     ],
   };
 
-  freqFlat = [
-    ...this.frequencies['E'],
-    ...this.frequencies['A'],
-    ...this.frequencies['D'],
-    ...this.frequencies['G'],
-  ];
+  stringsMap: { [key: string]: IString[] } = {
+    bass: ['G', 'D', 'A', 'E'],
+    guitar: ['e', 'H', 'G', 'D', 'A', 'E'],
+  };
 
-  // audioContext!: AudioContext;
-  // oscList = [];
-  // mainGainNode!: GainNode;
+  strings = this.stringsMap['bass'];
 
-  constructor() {}
+  // freqFlat = [
+  //   ...this.frequencies['E'],
+  //   ...this.frequencies['A'],
+  //   ...this.frequencies['D'],
+  //   ...this.frequencies['G'],
+  // ];
 
-  startAudio() {
+  startAudio(instrument: IInstrument) {
+    this.init(instrument);
     this.audioContext = new AudioContext();
     this.mainGainNode = this.audioContext.createGain();
     this.mainGainNode.connect(this.audioContext.destination);
@@ -108,16 +117,10 @@ export class SettingsService {
     this.audioInitialized = true;
     this.mainGainNodeS.set(this.mainGainNode);
   }
-  //   oscillators: OscillatorNode[] = this.freqFlat.map((f) => {
-  //     const osc = this.audioContext.createOscillator();
-  //     osc.connect(this.mainGainNode);
-  //     osc.type = 'sine';
-  //     osc.frequency.value = f;
-  //     return osc;
-  //   });
-  //   oscillators: Signal<OscillatorNode[]> = computed(() => {
-  //     const list: OscillatorNode[] = this.frequencies().map((f) => {
-  //     });
-  //     return list;
-  //   });
+  init(instrument: IInstrument) {
+    this.instrument.set(instrument);
+    this.scales = fingers[instrument];
+    this.strings = this.stringsMap[instrument];
+    this.frequencies = getFrequencies(this.strings);
+  }
 }

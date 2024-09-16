@@ -17,12 +17,12 @@ import { Component, input, output } from '@angular/core';
 export class ScalesComponent {
   scale = output<string>();
   scaleNames = [
-    'ionisch',
-    'dorisch',
-    'phrygisch',
-    'lydisch',
-    'mixolydisch',
-    'aeolisch',
-    'lokrisch',
+    'ionian',
+    'dorian',
+    'phrygian',
+    'lydian',
+    'mixolydian',
+    'aeolian',
+    'locrian',
   ];
 }

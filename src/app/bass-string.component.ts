@@ -10,6 +10,8 @@ import {
 } from '@angular/core';
 import { SettingsService } from './settings.service';
 import { debounceTime, delay, of, tap } from 'rxjs';
+import { IString } from './allnotes';
+import { IInstrument } from './fingers';
 
 @Component({
   selector: 'bass-string',
@@ -23,6 +25,8 @@ import { debounceTime, delay, of, tap } from 'rxjs';
         #noteFret
         [ngClass]="{
           'in-scale': isDotted($index),
+          bass: instrument() == 'bass',
+          guitar: instrument() == 'guitar',
           vibrate: playingNote() === frequencies()[$index],
         }"
         (mousedown)="playNote($index, noteFret)"
@@ -31,7 +35,8 @@ import { debounceTime, delay, of, tap } from 'rxjs';
   `,
 })
 export class BassStringComponent {
-  name = input.required<'G' | 'D' | 'A' | 'E'>();
+  instrument = input.required<IInstrument>();
+  name = input.required<IString>();
   fingers = input.required<number[]>();
   playingNote = input.required<number>();
   service = inject(SettingsService);
@@ -55,7 +60,7 @@ export class BassStringComponent {
   });
 
   oscillators: Signal<OscillatorNode[]> = computed(() => {
-    const list: OscillatorNode[] = this.frequencies().map((f) => {
+    const list: OscillatorNode[] = this.frequencies()?.map((f) => {
       const osc = this.service.audioContext.createOscillator();
       osc.connect(this.service.mainGainNode);
       osc.type = 'sine';
@@ -72,39 +77,41 @@ export class BassStringComponent {
     if (!this.isDotted(i)) {
       return;
     }
-    // console.log(i);
-    const freq = this.frequencies()[i];
-    const osc = this.service.audioContext.createOscillator();
-    osc.connect(this.service.mainGainNode);
-    osc.type = 'sine';
-    osc.frequency.value = freq;
+    console.log(this.frequencies());
+    if (this.frequencies()) {
+      const freq = this.frequencies()[i];
+      const osc = this.service.audioContext.createOscillator();
+      osc.connect(this.service.mainGainNode);
+      osc.type = 'sine';
+      osc.frequency.value = freq;
 
-    if (this.activeFrequencies.includes(freq)) {
-      return;
+      if (this.activeFrequencies.includes(freq)) {
+        return;
+      }
+
+      // const noteFretElement = event.target as HTMLElement;
+      this.renderer.addClass(elem, 'vibrate');
+
+      of([osc, freq])
+        .pipe(
+          tap((data) => {
+            const o = data[0] as OscillatorNode;
+            this.activeFrequencies.push(data[1] as number);
+            o.start();
+            // console.log(i, 'start');
+          }),
+          delay(1000),
+          tap((data) => {
+            const o = data[0] as OscillatorNode;
+            o.stop();
+            const freqs = [...this.activeFrequencies];
+            this.activeFrequencies = freqs.filter((f) => f !== data[1]);
+            o.disconnect();
+            this.renderer.removeClass(elem, 'vibrate');
+            // console.log(i, 'stop');
+          }),
+        )
+        .subscribe();
     }
-
-    // const noteFretElement = event.target as HTMLElement;
-    this.renderer.addClass(elem, 'vibrate');
-
-    of([osc, freq])
-      .pipe(
-        tap((data) => {
-          const o = data[0] as OscillatorNode;
-          this.activeFrequencies.push(data[1] as number);
-          o.start();
-          // console.log(i, 'start');
-        }),
-        delay(1000),
-        tap((data) => {
-          const o = data[0] as OscillatorNode;
-          o.stop();
-          const freqs = [...this.activeFrequencies];
-          this.activeFrequencies = freqs.filter((f) => f !== data[1]);
-          o.disconnect();
-          this.renderer.removeClass(elem, 'vibrate');
-          // console.log(i, 'stop');
-        }),
-      )
-      .subscribe();
   }
 }

@@ -81,13 +81,13 @@ import { SettingsService } from './settings.service';
 export class NavigationComponent {
   service = inject(SettingsService);
   scaleNames = [
-    'ionisch',
-    'dorisch',
-    'phrygisch',
-    'lydisch',
-    'mixolydisch',
-    'aeolisch',
-    'lokrisch',
+    'ionian',
+    'dorian',
+    'phrygian',
+    'lydian',
+    'mixolydian',
+    'aeolian',
+    'locrian',
   ];
 
   sendEvent(e: 'speak' | 'play' | 'stop') {

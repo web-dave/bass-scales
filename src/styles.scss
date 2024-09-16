@@ -2,11 +2,17 @@
 
 :root {
   --fretboard-height: 300;
-  --number-of-strings: 4;
+  --number-of-strings-bass: 4;
+  --number-of-strings-guitar: 6;
   --string-height: 10;
   --half-string-height: calc(var(--string-height) / 2);
-  --string-top-position: calc(
-    var(--fretboard-height) / var(--number-of-strings) / 2 - var(
+  --bass-string-top-position: calc(
+    var(--fretboard-height) / var(--number-of-strings-bass) / 2 - var(
+        --half-string-height
+      )
+  );
+  --guitar-string-top-position: calc(
+    var(--fretboard-height) / var(--number-of-strings-guitar) / 2 - var(
         --half-string-height
       )
   );
@@ -38,16 +44,31 @@ body {
   height: 100%;
   display: flex;
   position: relative;
-  &:before {
-    content: "";
-    width: 100%;
-    height: calc(var(--string-height) * 1px);
-    background: linear-gradient(#eee, #999);
-    box-shadow: 76px 3px 10px #806233;
-    z-index: 1;
-    position: absolute;
-    top: 22px;
-    top: calc(var(--string-top-position) * 1px);
+  &.bass {
+    &:before {
+      content: "";
+      width: 100%;
+      height: calc(var(--string-height) * 1px);
+      background: linear-gradient(#eee, #999);
+      box-shadow: 76px 3px 10px #806233;
+      z-index: 1;
+      position: absolute;
+      top: 22px;
+      top: calc(var(--bass-string-top-position) * 1px);
+    }
+  }
+  &.guitar {
+    &:before {
+      content: "";
+      width: 100%;
+      height: calc(var(--string-height) * 1px);
+      background: linear-gradient(#eee, #999);
+      box-shadow: 76px 3px 10px #806233;
+      z-index: 1;
+      position: absolute;
+      top: 22px;
+      top: calc(var(--guitar-string-top-position) * 1px);
+    }
   }
 }
 .note-fret {
@@ -72,6 +93,12 @@ body {
   }
   &.in-scale:before {
     background: hotpink;
+  }
+  &.guitar {
+    // padding-top: 20px;
+  }
+  &.bass {
+    padding-top: 0px;
   }
 }
 
