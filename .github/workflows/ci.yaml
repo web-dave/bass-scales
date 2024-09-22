@@ -26,4 +26,4 @@ jobs:
         if: github.ref == 'refs/heads/main'
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-        run: npm run deploy
+        run: git config --global user.name "ghactions" && npm run deploy
