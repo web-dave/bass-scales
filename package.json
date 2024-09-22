@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "check": "tsc --noEmit --pretty",
-    "deploy": "ng deploy --repo=https://github.com/sgohlke/bass-scales.git --name=\"ghactions\" --base-href=/bass-scales/"
+    "deploy": "ng deploy --repo=https://github.com/web-dave/bass-scales.git --name=\"ghactions\" --base-href=/bass-scales/"
   },
   "private": true,
   "dependencies": {
