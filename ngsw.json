@@ -1,0 +1,65 @@
+{
+  "configVersion": 1,
+  "timestamp": 1730750800741,
+  "index": "/bass-scales/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/bass-scales/favicon.ico",
+        "/bass-scales/index.html",
+        "/bass-scales/main-UAXMVXBE.js",
+        "/bass-scales/manifest.webmanifest",
+        "/bass-scales/polyfills-6EAL64PA.js",
+        "/bass-scales/styles-E4OEXL64.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/bass-scales/bass-scales-logo-170.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/bass-scales/bass-scales-logo-170.png": "ae88972d8125640278cc7b94c66047427b5914bf",
+    "/bass-scales/favicon.ico": "9c39f434fe1261f68c5e3eefdf734630d99c5670",
+    "/bass-scales/index.html": "d0bd4e379539a6b68a48e14c7bb1706020d8f67d",
+    "/bass-scales/main-UAXMVXBE.js": "ef88290081a99817d61af9a039010ce0525f1e98",
+    "/bass-scales/manifest.webmanifest": "632d73ddd9badfb2eef9315aa6e624a9f12269aa",
+    "/bass-scales/polyfills-6EAL64PA.js": "d874147a12a6570d9b44e99935e9de8b7f3cabbc",
+    "/bass-scales/styles-E4OEXL64.css": "2e67afdd4292ccdad61608c290f504be5a04909e"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ],
+  "navigationRequestStrategy": "performance"
+}

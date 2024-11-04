@@ -1,0 +1,17 @@
+{
+  "name": "bass-scales",
+  "short_name": "bass-scales",
+  "theme_color": "#353535",
+  "background_color": "#353535",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "bass-scales-logo-170.png",
+      "sizes": "170x170",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}
